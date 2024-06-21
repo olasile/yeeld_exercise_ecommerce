@@ -1,0 +1,26 @@
+<div class="container">
+  <h1>Products</h1>
+  <%= link_to 'New Product', new_product_path, class: 'btn btn-primary' %>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Price</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @products.each do |product| %>
+        <tr>
+          <td><%= product.name %></td>
+          <td><%= product.price %></td>
+          <td>
+            <%= link_to 'Purchase', new_complete_orders_path(product_id: product.id), class: 'btn btn-primary' %>
+            <%= button_to 'Delete', product_path(product.id), method: :delete, class: 'btn btn-primary mt-1' %>
+          </td>
+        </tr>
+     <% end %>
+    </tbody>
+  </table>
+</div>

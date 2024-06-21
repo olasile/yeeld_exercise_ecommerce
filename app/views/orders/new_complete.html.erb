@@ -1,0 +1,56 @@
+<div class="mb-2">
+  <table class="table">
+    <tr>
+      <td>
+        <h5>
+          <%= @product.name %> - <%= number_to_currency(@product.price, precision: 2) %>
+        </h5>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div id="payment-element"></div>
+<%= button_tag 'Pay', class: 'btn btn-primary mt-2', id: 'pay-btn', disabled: true %>
+
+
+<script>
+    document.addEventListener('turbo:load', function() {
+        let stripe = Stripe('<%= ENV['STRIPE_PUBLISHABLE_KEY'] %>');
+        let elements = stripe.elements({clientSecret: '<%= @payment_intent.client_secret %>'});
+        let paymentElement = elements.create('payment');
+
+        var paymentElementDiv = document.getElementById('payment-element');
+        if (paymentElementDiv === null) {
+            return;
+        }
+
+        paymentElement.mount('#payment-element');
+
+        let payBtn = document.getElementById('pay-btn');
+
+        paymentElement.on('change', function(event) {
+            if (event.complete) {
+                payBtn.removeAttribute('disabled');
+            }
+        });
+
+        payBtn.addEventListener('click', function () {
+            if(!this.disabled) {
+                console.log('confirming payment..')
+                stripe.confirmPayment({
+                    elements,
+                    confirmParams: {
+                        return_url: 'http://localhost:3000/orders/complete?id=<%= @order.id %>',
+                    }
+                })
+                    .then(function(result) {
+                        if (result.error) {
+                            let flash_messages = document.getElementById('flash_messages');
+                            flash_messages.innerText = result.error;
+                        }
+                    });
+            }
+        })
+    });
+</script>
