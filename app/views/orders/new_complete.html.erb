@@ -37,7 +37,6 @@
 
         payBtn.addEventListener('click', function () {
             if(!this.disabled) {
-                console.log('confirming payment..')
                 stripe.confirmPayment({
                     elements,
                     confirmParams: {

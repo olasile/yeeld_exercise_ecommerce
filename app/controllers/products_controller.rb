@@ -13,10 +13,10 @@ class ProductsController < ApplicationController
     @product = Product.new(permitted_params)
 
     if @product.save
-      flash.now[:success] = 'Product successfully created'
-      set_products
+      redirect_to products_path, flash: { success: 'Product successfully created' }
     else
       flash.now[:errors] = @product.errors.full_messages
+      render_flash
     end
   end
 
