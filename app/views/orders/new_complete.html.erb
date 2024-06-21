@@ -41,7 +41,7 @@
                 stripe.confirmPayment({
                     elements,
                     confirmParams: {
-                        return_url: 'http://localhost:3000/orders/complete?id=<%= @order.id %>',
+                        return_url: '<%= complete_orders_url(id: @order.id) %>',
                     }
                 })
                     .then(function(result) {
